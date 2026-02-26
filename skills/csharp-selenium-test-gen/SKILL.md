@@ -47,6 +47,8 @@ Bạn được gọi trực tiếp trong class con:
 | Thành phần | Mô tả |
 |---|---|
 | `ExcelPath` | const — Đường dẫn tuyệt đối tới file Excel |
+| `SaveToNewFile` | `virtual bool` — Mặc định `true`: tự sao chép file gốc sang file mới có timestamp thay vì ghi đè. Override với `false` trong class con nếu muốn ghi đè file gốc |
+| `OpenExcelForWrite()` | Mở file Excel để ghi kết quả — trả về `ExcelPackage`. Dùng thay cho `new ExcelPackage(new FileInfo(ExcelPath))` |
 | `UrlLogin`, `UrlCategories` | const — URL các trang web |
 | `Username`, `Password` | Đọc từ biến môi trường hoặc default |
 | `driver`, `wait` | Protected fields — ChromeDriver + WebDriverWait |
@@ -119,7 +121,9 @@ Tạo file tuân thủ cấu trúc:
 1. `[NonParallelizable]` attribute trên class.
 2. Class kế thừa `BaseTest`.
 3. Hàm `ExecuteCase(tcCode, field, rawData)` → fill form → trả về `string actual`.
-4. `[Test] public void TestCases()` → vòng lặp đọc Excel → gọi `ExecuteCase` → `SaveCaseResult`.
+4. `[Test] public void TestCases()` → mở Excel bằng `OpenExcelForWrite()` → vòng lặp đọc Excel → gọi `ExecuteCase` → `SaveCaseResult`.
+
+> **Lưu ý:** Luôn dùng `OpenExcelForWrite()` thay vì `new ExcelPackage(new FileInfo(ExcelPath))`. Mặc định sẽ tự sao chép sang file mới có timestamp, giữ nguyên file test data gốc.
 
 ---
 

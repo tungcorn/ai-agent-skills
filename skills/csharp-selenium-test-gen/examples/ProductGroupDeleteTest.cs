@@ -95,7 +95,7 @@ public class ProductGroupDeleteTest : BaseTest
     [Test]
     public void TestCasesDelete()
     {
-        using var package = new ExcelPackage(new FileInfo(ExcelPath));
+        using var package = OpenExcelForWrite();
         var sheet = RequireWorksheet(package, "Xóa nhóm hàng hóa", fallbackIndex: 2);
         int row = FindFirstDataRow(sheet);
 

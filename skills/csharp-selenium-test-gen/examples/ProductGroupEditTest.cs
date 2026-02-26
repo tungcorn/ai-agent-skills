@@ -76,7 +76,7 @@ public class ProductGroupEditTest : BaseTest
     [Test]
     public void TestCasesEdit()
     {
-        using var package = new ExcelPackage(new FileInfo(ExcelPath));
+        using var package = OpenExcelForWrite();
         var sheet = RequireWorksheet(package, "Chỉnh sửa nhóm hàng hóa", fallbackIndex: 1);
         int row = FindFirstDataRow(sheet);
 

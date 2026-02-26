@@ -55,7 +55,7 @@ public class ProductGroupCreateTest : BaseTest
     [Test]
     public void TestCasesCreate()
     {
-        using var package = new ExcelPackage(new FileInfo(ExcelPath));
+        using var package = OpenExcelForWrite();
         var sheet = RequireWorksheet(package, "Thêm nhóm hàng hóa", fallbackIndex: 0);
         int row = FindFirstDataRow(sheet);
 

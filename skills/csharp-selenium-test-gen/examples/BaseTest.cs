@@ -25,6 +25,28 @@ public class BaseTest
     protected const string ExcelPath =
         @"<ABSOLUTE_PATH_TO_EXCEL_FILE>";   // VD: @"D:\project\test-data.xlsx"
 
+    // Đặt false trong class con nếu muốn ghi đè file gốc thay vì tạo file kết quả mới
+    protected virtual bool SaveToNewFile => true;
+
+    /// <summary>
+    /// Mở file Excel để ghi kết quả test.
+    /// Mặc định (SaveToNewFile = true): sao chép file gốc sang file mới có timestamp (yyyy-MM-dd_HHmmss).
+    /// Đặt SaveToNewFile = false trong class con để ghi đè file gốc.
+    /// </summary>
+    protected ExcelPackage OpenExcelForWrite()
+    {
+        if (!SaveToNewFile)
+            return new ExcelPackage(new FileInfo(ExcelPath));
+
+        string dir  = Path.GetDirectoryName(ExcelPath)!;
+        string name = Path.GetFileNameWithoutExtension(ExcelPath);
+        string outputPath = Path.Combine(dir, $"{name}_result_{DateTime.Now:yyyy-MM-dd_HHmmss}.xlsx");
+
+        File.Copy(ExcelPath, outputPath, overwrite: true);
+        Console.WriteLine($"Sao chép file gốc sang: {outputPath}");
+        return new ExcelPackage(new FileInfo(outputPath));
+    }
+
     protected const string UrlLogin      = "http://<SERVER_IP>/login";
     protected const string UrlCategories = "http://<SERVER_IP>/categories";
 
@@ -233,7 +255,12 @@ public class BaseTest
     {
         for (int i = 1; i <= maxAttempts; i++)
         {
-            try { package.Save(); return; }
+            try
+            {
+                package.Save();
+                Console.WriteLine($"Đã lưu kết quả vào: {package.File?.FullName}");
+                return;
+            }
             catch (IOException) when (i < maxAttempts) { Thread.Sleep(400 * i); }
         }
         package.Save();
