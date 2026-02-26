@@ -28,9 +28,15 @@ public class BaseTest
     // Đặt false trong class con nếu muốn ghi đè file gốc thay vì tạo file kết quả mới
     protected virtual bool SaveToNewFile => true;
 
+    // Lưu đường dẫn file output dùng chung cho toàn bộ test trong 1 lần chạy
+    private static string? _sharedOutputPath;
+    private static readonly object _outputPathLock = new();
+
     /// <summary>
     /// Mở file Excel để ghi kết quả test.
-    /// Mặc định (SaveToNewFile = true): sao chép file gốc sang file mới có timestamp (yyyy-MM-dd_HHmmss).
+    /// Mặc định (SaveToNewFile = true): lần đầu tiên gọi sẽ sao chép file gốc sang file mới có
+    /// timestamp. Các test class chạy sau trong cùng 1 lần chạy sẽ dùng chung file đó — chỉ
+    /// tạo đúng 1 file kết quả duy nhất dù có bao nhiêu class Test.
     /// Đặt SaveToNewFile = false trong class con để ghi đè file gốc.
     /// </summary>
     protected ExcelPackage OpenExcelForWrite()
@@ -38,13 +44,19 @@ public class BaseTest
         if (!SaveToNewFile)
             return new ExcelPackage(new FileInfo(ExcelPath));
 
-        string dir  = Path.GetDirectoryName(ExcelPath)!;
-        string name = Path.GetFileNameWithoutExtension(ExcelPath);
-        string outputPath = Path.Combine(dir, $"{name}_result_{DateTime.Now:yyyy-MM-dd_HHmmss}.xlsx");
+        lock (_outputPathLock)
+        {
+            if (_sharedOutputPath == null)
+            {
+                string dir  = Path.GetDirectoryName(ExcelPath)!;
+                string name = Path.GetFileNameWithoutExtension(ExcelPath);
+                _sharedOutputPath = Path.Combine(dir, $"{name}_result_{DateTime.Now:yyyy-MM-dd_HHmmss}.xlsx");
+                File.Copy(ExcelPath, _sharedOutputPath, overwrite: true);
+                Console.WriteLine($"Tạo file kết quả mới: {_sharedOutputPath}");
+            }
+        }
 
-        File.Copy(ExcelPath, outputPath, overwrite: true);
-        Console.WriteLine($"Sao chép file gốc sang: {outputPath}");
-        return new ExcelPackage(new FileInfo(outputPath));
+        return new ExcelPackage(new FileInfo(_sharedOutputPath));
     }
 
     protected const string UrlLogin      = "http://<SERVER_IP>/login";

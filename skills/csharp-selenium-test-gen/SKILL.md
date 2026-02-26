@@ -47,8 +47,8 @@ Bạn được gọi trực tiếp trong class con:
 | Thành phần | Mô tả |
 |---|---|
 | `ExcelPath` | const — Đường dẫn tuyệt đối tới file Excel |
-| `SaveToNewFile` | `virtual bool` — Mặc định `true`: tự sao chép file gốc sang file mới có timestamp thay vì ghi đè. Override với `false` trong class con nếu muốn ghi đè file gốc |
-| `OpenExcelForWrite()` | Mở file Excel để ghi kết quả — trả về `ExcelPackage`. Dùng thay cho `new ExcelPackage(new FileInfo(ExcelPath))` |
+| `SaveToNewFile` | `virtual bool` — Mặc định `true`: tự sao chép file gốc sang file mới có timestamp. Override với `false` trong class con nếu muốn ghi đè file gốc |
+| `OpenExcelForWrite()` | Mở file Excel để ghi kết quả — trả về `ExcelPackage`. Lần đầu tạo file mới có timestamp, các test class chạy sau dùng chung file đó (`static _sharedOutputPath`). Dùng thay cho `new ExcelPackage(new FileInfo(ExcelPath))` |
 | `UrlLogin`, `UrlCategories` | const — URL các trang web |
 | `Username`, `Password` | Đọc từ biến môi trường hoặc default |
 | `driver`, `wait` | Protected fields — ChromeDriver + WebDriverWait |
