@@ -1,0 +1,22 @@
+# --- UI-MAP CONFIGURATION TEMPLATE ---
+# Lưu ý: Các ID như `_r_6_` hoặc CSS Class liên quan tới theme (như `html[class*='light']`) 
+# trong các thư viện React/Vue hiện đại (VD: Shadcn, Radix) là do máy tự sinh, nó KHÔNG CỐ ĐỊNH,
+# vì thế KHUYÊN DÙNG XPath Text để thay thế.
+
+# Module: Quản lý Nhân sự (Ví dụ)
+# Page: AddEmployeeForm
+
+employee_name_input: "id: name" # Tốt, Name ID tự đặt, thường cố định
+employee_email_input: "id: email"
+employee_address_input: "css: input[name='address']"
+
+# Bắt buộc cho dạng Dropdown/Combobox (Cần 2 hành động click):
+# Bước 1: Mở Dropdown
+department_dropdown_trigger: "xpath: //button[contains(@aria-expanded, 'false') and contains(., 'Chọn phòng ban')]"
+
+# Bước 2: Chọn Lựa chọn (Giá trị sẽ được format động trong C# thông qua string.Format hoặc $)
+# VD C#: driver.FindElement(By.XPath($"//div[@role='option'][contains(text(), '{excelValue}')]"));
+department_dropdown_option: "xpath: //div[@role='option'][contains(text(), '{0}')]"
+
+submit_btn: "xpath: //button[contains(., 'Thêm mới') or @type='submit']"
+cancel_btn: "xpath: //button[contains(., 'Hủy') or contains(., 'Quay lại')]"
