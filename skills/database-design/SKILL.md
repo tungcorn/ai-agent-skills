@@ -13,7 +13,7 @@ description: >
 
 # Database Design Skill
 
-Skill này dạy AI thiết kế hệ thống database chuẩn chỉnh, bao gồm toàn bộ quy trình từ phân tích yêu cầu đến triển khai.
+Kỹ năng này hướng dẫn AI thiết kế hệ thống cơ sở dữ liệu chuẩn chỉnh, bao gồm toàn bộ quy trình từ phân tích yêu cầu đến triển khai.
 
 ---
 
@@ -44,8 +44,8 @@ Luôn đi theo đúng thứ tự này:
 | Muốn tránh anti-patterns (EAV, God table, v.v.) | `references/anti-patterns.md` |
 | Temporal data, versioning, backup, HA, governance | `references/advanced-patterns.md` |
 
-**Luôn đọc ít nhất 1 reference file trước khi đưa ra schema hoàn chỉnh.**
-**Luôn đọc `anti-patterns.md` để double-check thiết kế không mắc lỗi phổ biến.**
+**Luôn đọc ít nhất một reference file trước khi đưa ra schema hoàn chỉnh.**
+**Luôn đọc `anti-patterns.md` để kiểm tra kỹ thiết kế không mắc lỗi phổ biến.**
 
 ---
 
@@ -74,9 +74,10 @@ Mỗi khi đưa ra thiết kế, phải bao gồm:
 - **DDL SQL** đầy đủ (CREATE TABLE với constraints)
 - **Giải thích lý do** cho từng quyết định thiết kế
 - **Các index** cần tạo
-- **Security considerations** (dữ liệu nhạy cảm, access control)
+- **Security considerations** (dữ liệu nhạy cảm, access control, data masking)
 - **Concurrency strategy** (nếu có write nhiều)
 - **Các điểm cần lưu ý** / trade-offs
+- **Data retention** (archiving, GDPR compliance)
 
 ### 3. Không bao giờ bỏ qua
 - Primary keys (luôn dùng surrogate key `id`)
@@ -122,7 +123,7 @@ Khi trả lời thiết kế database, luôn dùng format sau:
 
 ## ⚡ Quick Reference: Checklist Thiết Kế
 
-Trước khi finalize schema, check:
+Trước khi hoàn tất schema, kiểm tra:
 
 **Schema & Data Integrity:**
 - [ ] Tất cả bảng có `id` (UUID hoặc BIGINT AUTO_INCREMENT)?
@@ -140,11 +141,18 @@ Trước khi finalize schema, check:
 - [ ] Dữ liệu PII đã được xác định và xử lý đúng cách?
 - [ ] Có RLS hoặc filtering cho multi-tenant data?
 - [ ] DB user có quyền least privilege?
+- [ ] Data masking cho PII trong môi trường non-production?
 
 **Concurrency & Performance:**
 - [ ] Có version column cho bảng cần optimistic locking?
 - [ ] Transaction isolation level phù hợp?
 - [ ] Index strategy đã plan cho query patterns?
+- [ ] Đã kiểm tra schema với dữ liệu thực tế (đánh giá hiệu năng)?
+- [ ] Cần phân vùng cho bảng lớn ( > 10GB)?
+
+**Data Management:**
+- [ ] Data retention policies đã được định nghĩa (archiving/deletion)?
+- [ ] Có audit logging cho các thay đổi quan trọng?
 
 **Anti-patterns:**
 - [ ] Không có God table (bảng quá rộng, quá đa mục đích)?
